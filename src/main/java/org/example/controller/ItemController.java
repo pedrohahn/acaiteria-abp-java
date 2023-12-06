@@ -10,6 +10,7 @@ import org.example.service.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,10 +29,10 @@ public class ItemController extends AbstractController {
     private MovimentacaoEstoqueService movimentacaoEstoqueService;
 
     @PostMapping
-    public ResponseEntity<Item> create(@RequestBody @Valid Item entity) {
-        Item save = itemService.salvar(entity);
-        movimentacaoEstoqueService.salvarMovimentacao(entity, entity.getQuantidadeEstoque(), TipoMovimentacao.ENTRADA, entity.getPrecoCompra() * entity.getQuantidadeEstoque());
-        return ResponseEntity.created(URI.create("/api/item/" + entity.getId())).body(save);
+    public ResponseEntity<Item> create(@RequestBody @Valid Item entity) throws ValidationException {
+            Item save = itemService.salvar(entity);
+            movimentacaoEstoqueService.salvarMovimentacao(entity, entity.getQuantidadeEstoque(), TipoMovimentacao.ENTRADA, entity.getPrecoCompra() * entity.getQuantidadeEstoque());
+            return ResponseEntity.created(URI.create("/api/item/" + entity.getId())).body(save);
     }
 
     @GetMapping

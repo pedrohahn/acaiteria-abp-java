@@ -1,5 +1,7 @@
 package org.example.model;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
@@ -7,7 +9,7 @@ import java.time.LocalDateTime;
 @Entity
 public class MovimentacaoEstoque extends EntityId {
     @NotNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "item_id")
     private Item item;
     @NotNull @Positive
@@ -23,7 +25,6 @@ public class MovimentacaoEstoque extends EntityId {
     @Column(name = "valor", nullable = false, precision = 10, scale = 2)
     private Double valor;
 
-    //region getters e setters
     public Item getItem() {
         return item;
     }
@@ -63,5 +64,4 @@ public class MovimentacaoEstoque extends EntityId {
     public void setValor(Double valor) {
         this.valor = valor;
     }
-    //endregion
 }

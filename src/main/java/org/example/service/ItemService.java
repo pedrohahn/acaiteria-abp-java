@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.model.Item;
 import org.example.model.QItem;
+import org.example.model.UnidadeMedida;
 import org.example.repository.ItemRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,16 @@ public class ItemService {
 
     @Autowired
     private ItemRepository repository;
+    private UnidadeMedidaService unidadeMedidaService;
 
-    public Item salvar(Item entity) {
-        //region Regras de negócio
+    public Item salvar(Item entity) throws ValidationException {
         validaItem(entity.getDescricao(), 0L);
-        //endregion
+
+        if(entity.getPrecoCompra() > entity.getPrecoVenda()) {
+            throw new ValidationException("O preço de compra não pode ser maior que o de venda");
+        }
+
+
         return repository.save(entity);
     }
 
@@ -46,9 +52,9 @@ public class ItemService {
         }
         Item existingItem = existingItemOptional.get();
         modelMapper.map(entity, existingItem);
-        //region Regras de negócio
+
         validaItem(entity.getDescricao(), id);
-        //endregion
+
         return repository.save(existingItem);
     }
 
